@@ -14,13 +14,6 @@ gen_tunable(domain_fd_use, true)
 
 ## <desc>
 ## <p>
-## Allow unconfined domain to create user_namespace.
-## </p>
-## </desc>
-gen_tunable(unconfined_domain_can_create_user_namespace, false)
-
-## <desc>
-## <p>
 ## Allow all domains to execute in fips_mode
 ## </p>
 ## </desc>

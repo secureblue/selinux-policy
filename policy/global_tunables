@@ -34,6 +34,13 @@ gen_tunable(selinuxuser_execmod,false)
 
 ## <desc>
 ## <p>
+## Allow unconfined domain to create user_namespace.
+## </p>
+## </desc>
+gen_tunable(unconfined_domain_can_create_user_namespace, false)
+
+## <desc>
+## <p>
 ## Allow unconfined executables to make their stack executable.  This should never, ever be necessary. Probably indicates a badly coded executable, but could indicate an attack. This executable should be reported in bugzilla
 ## </p>
 ## </desc>
