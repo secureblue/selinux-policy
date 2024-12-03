@@ -362,6 +362,10 @@ optional_policy(`
 ')
 
 optional_policy(`
+	flatpak_run(unconfined_t, unconfined_r)
+')
+
+optional_policy(`
 	chronyd_run_chronyc(unconfined_t, unconfined_r)
 ')
 
