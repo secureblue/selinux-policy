@@ -1,4 +1,4 @@
-policy_module(flatpaktest, 1.0.0)
+policy_module(flatpakfull, 1.0.0)
 
 
 ########################################
