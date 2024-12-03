@@ -361,6 +361,12 @@ optional_policy(`
 	bubblewrap_run(unconfined_t, unconfined_r)
 ')
 
+
+optional_policy(`
+	chromium_run(unconfined_t, unconfined_r)
+')
+
+
 optional_policy(`
 	flatpak_run(unconfined_t, unconfined_r)
 ')

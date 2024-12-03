@@ -18,5 +18,4 @@ application_domain(bubblewrap_t, bubblewrap_exec_t)
 
 role bubblewrap_roles types bubblewrap_t;
 
-allow bubblewrap_t self:user_namespace create;
 unconfined_domain_noaudit(bubblewrap_t)
