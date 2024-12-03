@@ -1,0 +1,43 @@
+########################################
+## <summary>
+##	Execute bubblewrap in the bubblewrap domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`bubblewrap_domtrans',`
+	gen_require(`
+		type bubblewrap_t, bubblewrap_exec_t;
+	')
+
+	domtrans_pattern($1, bubblewrap_exec_t, bubblewrap_t)
+')
+
+
+########################################
+## <summary>
+##	Execute bubblewrap in the bubblewrap domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+#
+interface(`bubblewrap_run',`
+	gen_require(`
+		type bubblewrap_t;
+        attribute_role bubblewrap_roles;
+	')
+
+    bubblewrap_domtrans($1)
+    roleattribute $2 bubblewrap_roles;
+')
