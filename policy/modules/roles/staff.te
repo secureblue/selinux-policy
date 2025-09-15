@@ -168,6 +168,11 @@ optional_policy(`
 ')
 
 optional_policy(`
+	flatpak_manage_apps(staff_t)
+	flatpak_run_userdomain(staff)
+')
+
+optional_policy(`
 	freqset_run(staff_t, staff_r)
 ')
 

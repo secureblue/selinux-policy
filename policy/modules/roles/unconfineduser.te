@@ -313,6 +313,11 @@ optional_policy(`
 ')
 
 optional_policy(`
+	flatpak_manage_apps(unconfined_t)
+	flatpak_run_userdomain(unconfined)
+')
+
+optional_policy(`
 	fsadm_manage_pid(unconfined_t)
 ')
 
