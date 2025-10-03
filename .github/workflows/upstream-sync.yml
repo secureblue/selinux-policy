@@ -38,10 +38,13 @@ jobs:
         env:
           FEDORA_VERSION: 42
         run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
+          set -euxo pipefail
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
           git remote add 'upstream' 'https://github.com/fedora-selinux/selinux-policy.git'
           git fetch --tags 'upstream'
-          latest_tag=$(git tag -l "v${FEDORA_VERSION}.*" --sort='-creatordate' | head -n1)
-          git rebase "${latest_tag}"
+
+          spec_url="https://src.fedoraproject.org/rpms/selinux-policy/raw/f${FEDORA_VERSION}/f/selinux-policy.spec"
+          stable_version=$(curl -Ls "${spec_url}" | grep '^Version: .*')
+          git rebase "v${stable_version#Version: }"
           git push --follow-tags --force-with-lease
