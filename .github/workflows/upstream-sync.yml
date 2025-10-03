@@ -1,0 +1,45 @@
+# Copyright 2025 The Secureblue Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: upstream-sync
+permissions: {}
+on:
+  schedule:
+    - cron: "00 2 * * *" # run daily at 2:00 UTC
+  workflow_dispatch: # allow manually triggering sync
+
+jobs:
+  upstream-sync:
+    name: Sync with upstream
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # Needed to modify repository contents
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: true # zizmor: ignore[artipacked]
+          fetch-depth: 0
+
+      - name: Pull tags from upstream and rebase
+        shell: bash
+        env:
+          FEDORA_VERSION: 42
+        run: |
+          git remote add 'upstream' 'https://github.com/fedora-selinux/selinux-policy.git'
+          git fetch --tags 'upstream'
+          latest_tag=$(git tag -l "v${FEDORA_VERSION}.*" --sort='-creatordate' | head -n1)
+          git rebase "${latest_tag}"
+          git push --follow-tags --force-with-lease
