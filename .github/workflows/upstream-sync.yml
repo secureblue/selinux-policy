@@ -48,3 +48,6 @@ jobs:
           stable_commit=$(curl -Ls "${spec_url}" | grep -E '^%global commit [0-9a-fA-F]+$')
           git rebase "${stable_commit#%global commit }"
           git push --follow-tags --force-with-lease
+
+          readarray -t merged_tags < <(git tag -l "v${FEDORA_VERSION}.*" --merged)
+          git push origin "${merged_tags[@]}"
