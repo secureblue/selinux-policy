@@ -45,6 +45,6 @@ jobs:
           git fetch --tags 'upstream'
 
           spec_url="https://src.fedoraproject.org/rpms/selinux-policy/raw/f${FEDORA_VERSION}/f/selinux-policy.spec"
-          stable_version=$(curl -Ls "${spec_url}" | grep '^Version: .*')
-          git rebase "v${stable_version#Version: }"
+          stable_commit=$(curl -Ls "${spec_url}" | grep -E '^%global commit [0-9a-eA-E]+$')
+          git rebase "${stable_commit#%global commit }"
           git push --follow-tags --force-with-lease
