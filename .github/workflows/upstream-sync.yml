@@ -27,11 +27,18 @@ jobs:
       contents: write # Needed to modify repository contents
 
     steps:
+      - uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        id: app-token
+        with:
+          app-id: ${{ vars.REBASE_BOT_APPID }}
+          private-key: ${{ secrets.REBASE_BOT_SECRET }}
+
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: true # zizmor: ignore[artipacked]
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Pull tags from upstream and rebase
         shell: bash
@@ -39,8 +46,8 @@ jobs:
           FEDORA_VERSION: 42
         run: |
           set -euxo pipefail
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git config user.name 'github-actions[bot]'
+          git config user.email 'relinux-rebase-bot@users.noreply.github.com'
+          git config user.name 'selinux-rebase-bot'
           git remote add 'upstream' 'https://github.com/fedora-selinux/selinux-policy.git'
           git fetch --tags 'upstream'
 
