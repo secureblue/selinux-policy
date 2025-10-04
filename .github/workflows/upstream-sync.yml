@@ -46,8 +46,19 @@ jobs:
 
           spec_url="https://src.fedoraproject.org/rpms/selinux-policy/raw/f${FEDORA_VERSION}/f/selinux-policy.spec"
           stable_commit=$(curl -Ls "${spec_url}" | grep -E '^%global commit [0-9a-fA-F]+$')
-          git rebase "${stable_commit#%global commit }"
-          git push --follow-tags --force-with-lease
+          stable_commit="${stable_commit#%global commit }"
+          set +e
+          git merge-base --is-ancestor "${stable_commit}" HEAD
+          status=$?
+          set -e
+          case "${status}" in
+          0) ;;
+          1)
+            git rebase "${stable_commit}"
+            git push --follow-tags --force-with-lease
+            ;;
+          *) exit "${status}" ;;
+          esac
 
           readarray -t merged_tags < <(git tag -l "v${FEDORA_VERSION}.*" --merged)
           git push origin "${merged_tags[@]}"
