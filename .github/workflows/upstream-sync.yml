@@ -33,14 +33,22 @@ jobs:
           persist-credentials: true # zizmor: ignore[artipacked]
           fetch-depth: 0
 
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6.3.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
       - name: Pull tags from upstream and rebase
         shell: bash
         env:
           FEDORA_VERSION: 42
         run: |
           set -euxo pipefail
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git config user.name 'github-actions[bot]'
+          git config user.email '236124859+secureblue-bot@users.noreply.github.com'
+          git config user.name 'secureblue-bot'
           git remote add 'upstream' 'https://github.com/fedora-selinux/selinux-policy.git'
           git fetch --tags 'upstream'
 
