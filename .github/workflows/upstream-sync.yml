@@ -40,6 +40,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
+          git_push_gpgsign: true
 
       - name: Pull tags from upstream and rebase
         shell: bash
@@ -49,6 +50,10 @@ jobs:
           set -euxo pipefail
           git config user.email '236124859+secureblue-bot@users.noreply.github.com'
           git config user.name 'secureblue-bot'
+          git config --global user.signingkey E216FE5D67C3E057
+          git config --global commit.gpgsign true
+          git config --global tag.gpgSign true
+
           git remote add 'upstream' 'https://github.com/fedora-selinux/selinux-policy.git'
           git fetch --tags 'upstream'
 
