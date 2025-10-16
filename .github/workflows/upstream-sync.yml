@@ -41,7 +41,7 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
           
-      - uses: webfactory/ssh-agent@a6f90b1f127823b31d4d4a8d96047790581349bd # v0.9.1
+      - uses: step-security/ssh-agent@e0d707bd9ce1ec5725e45bd639f7dc60dbc82b39 # v0.9.2
         with:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
