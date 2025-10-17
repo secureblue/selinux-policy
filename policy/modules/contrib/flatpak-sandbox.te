@@ -166,6 +166,7 @@ optional_policy(`
 	gen_require(`
 		type init_t;
 	')
+	init_stream_connectto(flatpak_domain)
 	exec_files_pattern(init_t, flatpak_exec_t, flatpak_exec_t)
 	flatpak_manage_apps(init_t)
 ')
