@@ -140,6 +140,8 @@ fs_unmount_all_fs(flatpak_domain)
 
 storage_rw_fuse(flatpak_domain)
 
+term_use_generic_ptys(flatpak_domain)
+
 auth_read_passwd(flatpak_domain)
 
 miscfiles_read_all_certs(flatpak_domain)
