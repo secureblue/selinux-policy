@@ -192,6 +192,10 @@ optional_policy(`
 ')
 
 optional_policy(`
+	bluetooth_dbus_chat(flatpak_domain)
+')
+
+optional_policy(`
 	cups_stream_connect(flatpak_domain)
 ')
 
