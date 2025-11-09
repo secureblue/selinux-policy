@@ -27,6 +27,7 @@
 #
 template(`flatpak_role_template',`
 	gen_require(`
+		attribute_role flatpak_roles;
 		type flatpak_exec_t;
 		type flatpak_tmpfs_t;
 		type flatpak_var_lib_t;
