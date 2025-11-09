@@ -305,7 +305,7 @@ optional_policy(`
 
 optional_policy(`
 	flatpak_manage_apps(sysadm_t)
-	flatpak_run_userdomain(sysadm)
+	flatpak_user_template(sysadm)
 ')
 
 optional_policy(`

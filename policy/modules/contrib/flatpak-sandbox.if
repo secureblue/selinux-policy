@@ -2,6 +2,95 @@
 
 ########################################
 ## <summary>
+##	Allow role to run flatpak from the given domain, transitioning to a given domain.
+## </summary>
+## <param name="domain_prefix">
+##	<summary>
+##	The prefix of the domain (e.g., user is the prefix for user_t).
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role (or role attribute) allowed access.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	Domain to transition from.
+##	</summary>
+## </param>
+## <param name="domain">
+##	<summary>
+##	Domain to transition to.
+##	</summary>
+## </param>
+#
+template(`flatpak_role_template',`
+	gen_require(`
+		type flatpak_exec_t;
+		type flatpak_tmpfs_t;
+		type flatpak_var_lib_t;
+		type flatpak_data_home_t;
+		type flatpak_var_home_t;
+	')
+
+	type $1_flatpak_t;
+	role $2 types $1_flatpak_t;
+	roleattribute $2 flatpak_roles;
+
+	userdom_user_application_domain($1_flatpak_t, flatpak_exec_t)
+	domain_entry_file($4, flatpak_var_lib_t)
+	domain_entry_file($4, flatpak_data_home_t)
+	domain_entry_file($4, flatpak_var_home_t)
+	flatpak_domtrans($3, $1_flatpak_t)
+	flatpak_generic_app_domtrans($1_flatpak_t, $4)
+
+	allow $3 $1_flatpak_t:process { signal_perms getpgid };
+	tunable_policy(`deny_ptrace',`',`
+		allow $3 $1_flatpak_t:process ptrace;
+	')
+	allow $3 $1_flatpak_t:file rw_file_perms;
+
+	allow $4 $1_flatpak_t:process signal_perms;
+	allow $4 $1_flatpak_t:unix_stream_socket { server_stream_socket_perms connectto };
+
+	allow $1_flatpak_t $4:process { signal_perms noatsecure siginh rlimitinh };
+	allow $1_flatpak_t $4:process2 { nnp_transition nosuid_transition };
+
+	kernel_read_system_state($1_flatpak_t)
+	logging_send_syslog_msg($1_flatpak_t)
+
+	read_files_pattern($3, $1_flatpak_t, $1_flatpak_t)
+	rw_fifo_files_pattern($1_flatpak_t, $3, $3)
+
+	mmap_rw_files_pattern($4, flatpak_tmpfs_t, flatpak_tmpfs_t)
+	read_files_pattern($4, $1_flatpak_t, $1_flatpak_t)
+	write_fifo_files_pattern($4, $1_flatpak_t, $1_flatpak_t)
+
+	flatpak_exec_apps($4)
+')
+
+########################################
+## <summary>
+##	Allow user domain to run flatpaks.
+## </summary>
+## <param name="userdomain_prefix">
+##	<summary>
+##	The prefix of the user domain (e.g., user is the prefix for user_t).
+##	</summary>
+## </param>
+#
+template(`flatpak_user_template',`
+	gen_require(`
+		role $1_r;
+		type $1_t;
+	')
+
+	flatpak_role_template($1, $1_r, $1_t, $1_t)
+')
+
+########################################
+## <summary>
 ##	Execute flatpak in a provided domain.
 ## </summary>
 ## <param name="domain">
@@ -70,92 +159,6 @@ interface(`flatpak_generic_domtrans',`
 	# Only apply this to generic flatpak app exec types to make it possible to
 	# apply app-specific confinement with a transition to a different domain.
 	flatpak_generic_app_domtrans($2, $1)
-')
-
-########################################
-## <summary>
-##	Allow domain to run flatpaks.
-## </summary>
-## <param name="domain_prefix">
-##	<summary>
-##	The prefix of the domain (e.g., user is the prefix for user_t).
-##	</summary>
-## </param>
-## <param name="role">
-##	<summary>
-##	Role (or role attribute) allowed access.
-##	</summary>
-## </param>
-## <param name="domain">
-##	<summary>
-##	Domain to transition to.
-##	</summary>
-## </param>
-#
-interface(`flatpak_run',`
-	gen_require(`
-		type $1_t;
-		type flatpak_exec_t;
-		type flatpak_tmpfs_t;
-		type flatpak_var_lib_t;
-		type flatpak_data_home_t;
-		type flatpak_var_home_t;
-	')
-
-	type $1_flatpak_t;
-	role $2 types { $1_flatpak_t $3 };
-
-	userdom_user_application_domain($1_flatpak_t, flatpak_exec_t)
-	domain_entry_file($3, flatpak_var_lib_t)
-	domain_entry_file($3, flatpak_data_home_t)
-	domain_entry_file($3, flatpak_var_home_t)
-	flatpak_domtrans($1_t, $1_flatpak_t)
-	flatpak_generic_app_domtrans($1_flatpak_t, $3)
-
-	allow $1_t $1_flatpak_t:process { signal_perms getpgid };
-	tunable_policy(`deny_ptrace',`',`
-		allow $1_t $1_flatpak_t:process ptrace;
-	')
-	allow $1_t $1_flatpak_t:file rw_file_perms;
-
-	allow $3 $1_flatpak_t:process signal_perms;
-	allow $3 $1_flatpak_t:unix_stream_socket { server_stream_socket_perms connectto };
-
-	allow $1_flatpak_t $3:process { signal_perms noatsecure siginh rlimitinh };
-	allow $1_flatpak_t $3:process2 { nnp_transition nosuid_transition };
-
-	kernel_read_system_state($1_flatpak_t)
-	logging_send_syslog_msg($1_flatpak_t)
-
-	read_files_pattern($1_t, $1_flatpak_t, $1_flatpak_t)
-	rw_fifo_files_pattern($1_flatpak_t, $1_t, $1_t)
-	rw_fifo_files_pattern($3, $1_t, $1_t)
-
-	mmap_rw_files_pattern($3, flatpak_tmpfs_t, flatpak_tmpfs_t)
-	read_files_pattern($3, $1_flatpak_t, $1_flatpak_t)
-	write_fifo_files_pattern($3, $1_flatpak_t, $1_flatpak_t)
-
-	flatpak_exec_apps($3)
-')
-
-########################################
-## <summary>
-##	Allow user domain to run flatpaks.
-## </summary>
-## <param name="userdomain_prefix">
-##	<summary>
-##	The prefix of the user domain (e.g., user is the prefix for user_t).
-##	</summary>
-## </param>
-#
-interface(`flatpak_run_userdomain',`
-	gen_require(`
-		role $1_r;
-		attribute_role flatpak_roles;
-	')
-
-	flatpak_run($1, $1_r, $1_t)
-	roleattribute $1_r flatpak_roles;
 ')
 
 ########################################

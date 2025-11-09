@@ -314,7 +314,7 @@ optional_policy(`
 
 optional_policy(`
 	flatpak_manage_apps(unconfined_t)
-	flatpak_run_userdomain(unconfined)
+	flatpak_user_template(unconfined)
 ')
 
 optional_policy(`
