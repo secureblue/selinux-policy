@@ -48,7 +48,7 @@ jobs:
       - name: Pull tags from upstream and rebase
         shell: bash
         env:
-          FEDORA_VERSION: 42
+          FEDORA_VERSION: 43
         run: |
           set -euxo pipefail
           git config user.email '236124859+secureblue-bot@users.noreply.github.com'
