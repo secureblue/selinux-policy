@@ -1,0 +1,6 @@
+policy_module(trivalent-lib64, 1.0.0)
+
+require {
+    type trivalent_exec_t;
+    type trivalent_script_exec_t;
+}
