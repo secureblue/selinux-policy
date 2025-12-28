@@ -59,7 +59,10 @@ allow flatpak_domain flatpak_domain:unix_stream_socket connectto;
 
 can_exec(flatpak_domain, flatpak_exec_t)
 
-filetrans_pattern(flatpak_domain, var_home_t, flatpak_var_home_t, dir, "app")
+filetrans_pattern(domain, var_home_t, flatpak_var_home_t, dir, "app")
+filetrans_pattern(flatpak_domain, var_home_t, flatpak_var_home_t, dir)
+create_dirs_pattern(flatpak_domain, var_home_t, var_home_t)
+create_dirs_pattern(flatpak_domain, var_home_t, flatpak_var_home_t)
 
 manage_dirs_pattern(flatpak_domain, flatpak_lib_type, flatpak_lib_type)
 manage_files_pattern(flatpak_domain, flatpak_lib_type, flatpak_lib_type)
