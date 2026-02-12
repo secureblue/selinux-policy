@@ -304,6 +304,11 @@ optional_policy(`
 ')
 
 optional_policy(`
+	flatpak_manage_apps(sysadm_t)
+	flatpak_user_template(sysadm)
+')
+
+optional_policy(`
 	fstools_run(sysadm_t, sysadm_r)
 ')
 

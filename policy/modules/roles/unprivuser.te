@@ -84,6 +84,11 @@ optional_policy(`
 ')
 
 optional_policy(`
+	flatpak_manage_apps(user_t)
+	flatpak_user_template(user)
+')
+
+optional_policy(`
 	fwupd_dbus_chat(user_t)
 ')
 
