@@ -85,14 +85,14 @@ domtrans_pattern(sshd_t, sshd_session_exec_t, sshd_session_t)
 ssh_session_dyntransition_to(sshd_net_t)
 
 allow sshd_session_t self:capability { audit_write chown dac_read_search setgid setuid sys_resource };
-allow sshd_session_t self:process { setcurrent setexec setkeycreate setrlimit setsched };
+allow sshd_session_t self:process { rlimitinh setcurrent setexec setkeycreate setrlimit setsched };
 allow sshd_session_t self:netlink_audit_socket { create nlmsg_relay };
 allow sshd_session_t self:netlink_route_socket { bind create getattr nlmsg_read };
 allow sshd_session_t self:udp_socket { connect create getattr };
 
 allow sshd_net_t sshd_t:vsock_socket { read write };
 allow sshd_net_t sshd_session_t:fifo_file write;
-allow sshd_net_t sshd_session_t:unix_stream_socket { read write };
+allow sshd_net_t sshd_session_t:unix_stream_socket { ioctl read write };
 allow sshd_session_t sshd_t:tcp_socket { getattr getopt read setopt write };
 allow sshd_session_t sshd_t:unix_stream_socket { read write };
 allow sshd_session_t sshd_t:vsock_socket { getattr };
@@ -123,6 +123,10 @@ optional_policy(`
 
 optional_policy(`
 	cockpit_read_pid_files(sshd_session_t)
+')
+
+optional_policy(`
+	ica_rw_map_tmpfs_files(sshd_session_t)
 ')
 
 optional_policy(`
@@ -169,6 +173,8 @@ allow sshd_auth_t self:process { setcurrent setrlimit };
 allow sshd_auth_t self:unix_dgram_socket { create ioctl };
 
 allow sshd_auth_t sshd_t:tcp_socket { getattr read write getopt setopt };
+allow sshd_auth_t sshd_t:vsock_socket getattr;
+
 allow sshd_auth_t sshd_session_t:unix_stream_socket { read write };
 
 kernel_read_proc_files(sshd_auth_t)
