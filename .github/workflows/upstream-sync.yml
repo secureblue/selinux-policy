@@ -41,7 +41,7 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
           
-      - uses: step-security/ssh-agent@e0d707bd9ce1ec5725e45bd639f7dc60dbc82b39 # v0.9.2
+      - uses: step-security/ssh-agent@04004923389ca1b759b2bee0005f2db1253aeb15 # v0.10.0
         with:
             ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
