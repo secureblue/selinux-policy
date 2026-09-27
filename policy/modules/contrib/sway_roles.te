@@ -1,0 +1,15 @@
+policy_module(sway_roles, 1.0)
+
+require {
+    type user_t;
+    type staff_t;
+
+    role user_r;
+    role staff_r;
+}
+
+
+sway_role(user, user_t, user_r)
+
+sway_role(staff, staff_t, staff_r)
+

@@ -1,0 +1,19 @@
+policy_module(sway, 1.0)
+
+########################################
+#
+# Declarations
+#
+
+attribute_role sway_roles;
+
+type sway_exec_t;
+
+type sway_etc_t;
+files_config_file(sway_etc_t)
+
+type sway_xdg_config_t;
+userdom_user_home_content(sway_xdg_config_t)
+
+type sway_runtime_t;
+files_pid_file(sway_runtime_t)
